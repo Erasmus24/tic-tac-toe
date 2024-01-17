@@ -2,12 +2,10 @@ import "./App.css";
 
 import classNames from "classnames";
 
-// State helpers
 import { useLocalStorage } from "./useLocalStorage";
 import { deriveStats, deriveGame } from "./utils";
 
-// Component imports
-//import Footer from "./components/Footer";
+
 import Modal from "./components/Modal";
 import Menu from "./components/Menu";
 
@@ -22,14 +20,12 @@ const initialState = {
 export default function App() {
   const [state, setState] = useLocalStorage("game-state-key", initialState);
 
-  // Derived state (updates on every state change)
   const game = deriveGame(state);
   const stats = deriveStats(state);
 
   const resetGame = (isNewRound) => {
     setState((prevState) => {
       const stateCopy = structuredClone(prevState);
-      // If game is complete, archive it to history object
       if (game.status.isComplete) {
         const { moves, status } = game;
         stateCopy.history.currentRoundGames.push({
@@ -40,7 +36,6 @@ export default function App() {
 
       stateCopy.currentGameMoves = [];
 
-      // Must archive current round in addition to resetting current game
       if (isNewRound) {
         stateCopy.history.allGames.push(...stateCopy.history.currentRoundGames);
         stateCopy.history.currentRoundGames = [];
@@ -94,7 +89,6 @@ export default function App() {
                 id={squareId.toString()}
                 className="square shadow"
                 onClick={() => {
-                  // Don't make a move on square if there already is one
                   if (existingMove) return;
 
                   handlePlayerMove(squareId, game.currentPlayer);
